@@ -1,7 +1,7 @@
 
 <template>
   <section>
-    <v-row>
+    <v-row class="align-baseline">
       <v-col md="4" class="pa-5">
         <v-overflow-btn
           @change="getSlots"
@@ -61,7 +61,7 @@
           <v-toolbar-title>Nurse Supply History</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="500px">
+          <v-dialog v-model="dialog" max-width="700px" min-height="700px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
                 Assign Nurse
@@ -74,7 +74,7 @@
 
               <v-card-text>
                 <v-container>
-                  <v-row>
+                  <v-row class="align-baseline">
                     <v-col cols="12" sm="6" md="12">
                       <v-overflow-btn
                         :items="centre_data"
@@ -84,6 +84,7 @@
                         clearable
                         autocomplete="off"
                         dense
+                        hide-details
                         v-model="editedItem.centre_id"
                         item-text="name"
                         item-value="_id"
@@ -101,30 +102,110 @@
                   </v-row>
                   <v-row>
                     <v-col cols="12" sm="6" md="12">
-                      <date-range-picker
-                        ref="picker"
-                        :opens="opens"
-                        :minDate="minDate"
-                        :maxDate="maxDate"
-                        :singleDatePicker="singleDatePicker"
-                        :timePicker="timePicker"
-                        :showDropdowns="showDropdowns"
-                        :autoApply="autoApply"
-                        :select="dateRange"
-                        :update="dateRange"
-                        :locale-data="{
-                          format: 'dd-mm-yyyy HH:mm:ss',
-                        }"
-                        v-model="dateRange"
+                      <v-menu
+                        v-model="datepicker_form"
+                        :close-on-content-click="false"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="200px"
                       >
-                        <template
-                          v-slot:input="dateRange"
-                          style="min-width: 350px"
-                        >
-                          {{ dateRange.startDate}} -
-                          {{ dateRange.endDate}}
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="formDateRangeText"
+                            range
+                            label="Select Date Range"
+                            append-icon="mdi-calendar"
+                            readonly
+                            dense
+                            outlined
+                            v-bind="attrs"
+                            v-on="on"
+                          ></v-text-field>
                         </template>
-                      </date-range-picker>
+                        <v-date-picker
+                          v-model="form_dates"
+                          range
+                          @input="menu_form = false"
+                        ></v-date-picker>
+                      </v-menu>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="11" sm="5">
+                      <v-dialog
+                        ref="dialog"
+                        v-model="modal2"
+                        :return-value.sync="start_time"
+                        persistent
+                        width="290px"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="start_time"
+                            label="Start Time"
+                            prepend-icon="mdi-clock-time-four-outline"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <v-time-picker
+                          v-if="modal2"
+                          v-model="start_time"
+                          full-width
+                        >
+                          <v-spacer></v-spacer>
+                          <v-btn text color="primary" @click="modal2 = false">
+                            Cancel
+                          </v-btn>
+                          <v-btn
+                            text
+                            color="primary"
+                            @click="$refs.dialog.save(start_time)"
+                          >
+                            OK
+                          </v-btn>
+                        </v-time-picker>
+                      </v-dialog>
+                    </v-col>
+
+                    <v-spacer></v-spacer>
+                    <v-col cols="11" sm="5">
+                      <v-dialog
+                        ref="dialog1"
+                        v-model="modal3"
+                        :return-value.sync="end_time"
+                        persistent
+                        width="290px"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="end_time"
+                            label="End Time"
+                            prepend-icon="mdi-clock-time-four-outline"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <v-time-picker
+                          v-if="modal3"
+                          v-model="end_time"
+                          full-width
+                        >
+                          <v-spacer></v-spacer>
+                          <v-btn text color="primary" @click="modal3 = false">
+                            Cancel
+                          </v-btn>
+                          <v-btn
+                            text
+                            color="primary"
+                            @click="$refs.dialog1.save(end_time)"
+                          >
+                            OK
+                          </v-btn>
+                        </v-time-picker>
+                      </v-dialog>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -141,14 +222,14 @@
           </v-dialog>
         </v-toolbar>
       </template>
-      <template v-slot:[`item.date`]="{ item }">
-        <span>{{ moment(item.start_time).format("DD MMM YYYY") }}</span>
+      <template v-slot:[`item.start_date`]="{ item }">
+        <span>{{ moment(item.start_time).tz('Asia/Singapore').format("DD MMM YYYY") }}</span>
       </template>
-      <template v-slot:[`item.start_time`]="{ item }">
-        <span>{{ moment(item.start_time).format("HH:mm A") }}</span>
+      <template v-slot:[`item.end_date`]="{ item }">
+        <span>{{ moment(item.end_time).tz('Asia/Singapore').format("DD MMM YYYY") }}</span>
       </template>
-      <template v-slot:[`item.end_time`]="{ item }">
-        <span>{{ moment(item.end_time).format("HH:mm A") }}</span>
+      <template v-slot:[`item.times`]="{ item }">
+        <span>{{ moment(item.start_time).tz('Asia/Singapore').format("HH:mm") }} ~ {{ moment(item.end_time).format("HH:mm") }}</span>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
@@ -161,7 +242,7 @@
 </template>
 
 <script>
-import * as moment from "moment";
+import * as moment from "moment-timezone";
 import DateRangePicker from "vue2-daterange-picker";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
 export default {
@@ -171,37 +252,40 @@ export default {
     moment: moment,
     dialogDelete: false,
     headers: [
-      { text: "Date", value: "date" },
+      { text: "Start Date", value: "start_date" },
+      { text: "End Date", value: "end_date" },
+      { text: "Time", value: "times" },
       { text: "Number of Nurses", value: "number_of_nurses" },
-      { text: "Start Time", value: "start_time" },
-      { text: "End Time", value: "end_time" },
+
     ],
     data: [],
     centre_data: [],
     ranges: true,
-    center: "centre",
-    opens: "centre",
-    minDate: moment().format(),
-    maxDate: moment().add(1, "month").format(),
-    singleDatePicker: "range",
-    timePicker: true,
-    showDropdowns: true,
-    autoApply: true,
-
+    menu_form: false,
     menu: false,
     selectedCentre: "",
     selectedCentreForNurse: "",
     dateRange: {},
+    modal3: false,
+    menu_start_time: false,
+    menu_end_time: false,
+    start_time: null,
+    end_time: null,
+    menu2_form: false,
+    modal2: false,
     search: "",
     editedIndex: -1,
     dates: [
       moment().format("YYYY-MM-DD"),
       moment().add(1, "day").format("YYYY-MM-DD"),
     ],
+    form_dates: [
+      moment().format("YYYY-MM-DD"),
+      moment().add(1, "day").format("YYYY-MM-DD"),
+    ],
     datepicker: false,
-    picker: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-      .toISOString()
-      .substr(0, 10),
+    datepicker_form: false,
+    menu2: false,
     editedItem: {
       centre_id: "",
       number_of_nurses: 0,
@@ -223,6 +307,13 @@ export default {
     dateRangeText() {
       if (this.dates.length > 0) {
         return this.dates.join(" ~ ");
+      } else {
+        return "Select Date Range";
+      }
+    },
+    formDateRangeText() {
+      if (this.form_dates.length > 0) {
+        return this.form_dates.join(" ~ ");
       } else {
         return "Select Date Range";
       }
@@ -277,10 +368,10 @@ export default {
       let payload = {
         centre_id: this.editedItem.centre_id,
         number_of_nurses: this.editedItem.number_of_nurses,
-        start_time: this.dateRange.startDate,
-        end_time: this.dateRange.endDate,
+        start_time: this.start_time,
+        end_time: this.end_time,
+        dates: this.dates
       };
-      console.log(payload);
       try {
         await this.$axios.$post(url, payload);
         this.getSlots();

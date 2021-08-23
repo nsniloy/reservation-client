@@ -1,7 +1,7 @@
 
 <template>
   <section>
-    <v-row>
+    <v-row   class="align-baseline">
       <v-col md="4" class="pa-5">
         <v-overflow-btn
           @change="getReservations"
@@ -154,17 +154,17 @@
         </v-toolbar>
       </template>
       <template v-slot:[`item.date`]="{ item }">
-        <span>{{ moment(item.date).format("DD MMM YYYY") }}</span>
+        <span>{{ moment(item.date).tz('Asia/Singapore').format("DD MMM YYYY")}}</span>
       </template>
       <template v-slot:[`item.time`]="{ item }">
-        <span>{{ moment(item.date).format("HH:mm A") }}</span>
+        <span>{{ moment(item.date).tz('Asia/Singapore').format("HH:mm A")}}</span>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
       </template>
       <template v-slot:no-data>
-        <v-btn color="primary" @click="getReservations"> Reset </v-btn>
+        <v-btn color="dark" @click="getReservations"> Reset </v-btn>
       </template>
     </v-data-table>
     <div name="snackbars">
@@ -182,7 +182,7 @@
 </template>
 
 <script>
-import * as moment from "moment";
+import * as moment from "moment-timezone";
 export default {
   data: () => ({
     dialog: false,

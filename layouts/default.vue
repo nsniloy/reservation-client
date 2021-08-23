@@ -1,17 +1,8 @@
 <template>
   <v-app dark>
-    <v-navigation-drawer
-      v-model="drawer"
-      fixed
-      app
-    >
+    <v-navigation-drawer dark v-model="drawer" fixed app>
       <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-        >
+        <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router>
           <v-list-item-action>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-action>
@@ -21,16 +12,10 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar
-      fixed
-      app
-    >
+    <v-app-bar fixed app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn
-        icon
-        @click.stop="miniVariant = !miniVariant"
-      >
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
+      <v-btn icon @click.stop="miniVariant = !miniVariant">
+        <v-icon>mdi-{{ `chevron-${miniVariant ? "right" : "left"}` }}</v-icon>
       </v-btn>
       <v-toolbar-title v-text="title" />
       <v-spacer />
@@ -45,37 +30,37 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       drawer: true,
       fixed: false,
       items: [
         {
-          icon: 'mdi-home',
-          title: 'Vaccination Centres',
-          to: '/admin/centres'
+          icon: "mdi-home",
+          title: "Vaccination Centres",
+          to: "/admin/centres",
         },
         {
-          icon: 'mdi-doctor',
-          title: 'Nurses',
-          to: '/admin/nurses'
+          icon: "mdi-doctor",
+          title: "Nurses",
+          to: "/admin/nurses",
         },
         {
-          icon: 'mdi-clock',
-          title: 'Slots',
-          to: '/admin/slots'
+          icon: "mdi-clock",
+          title: "Slots",
+          to: "/admin/slots",
         },
         {
-          icon: 'mdi-calendar',
-          title: 'Reservations',
-          to: '/admin/reservations'
-        }
+          icon: "mdi-calendar",
+          title: "Reservations",
+          to: "/admin/reservations",
+        },
       ],
       miniVariant: false,
       left: true,
       leftDrawer: true,
-      title: 'Homage'
-    }
-  }
-}
+      title: "Homage",
+    };
+  },
+};
 </script>
