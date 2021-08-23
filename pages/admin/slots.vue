@@ -64,13 +64,13 @@
         </v-toolbar>
       </template>
       <template v-slot:[`item.date`]="{ item }">
-        <span>{{ moment(item.date).tz('Asia/Singapore').format("DD MMM YYYY") }}</span>
+        <span>{{ moment(item.date).tz('GMT').format("DD MMM YYYY") }}</span>
       </template>
       <template v-slot:[`item.time`]="{ item }">
-        <span>{{ moment(item.date).tz('Asia/Singapore').format("HH:mm A") }}</span>
+        <span>{{ moment(item.date).tz('GMT').format("HH:mm") }}</span>
       </template>
       <template v-slot:[`item.createdAt`]="{ item }">
-        <span>{{ moment(item.createdAt).tz('Asia/Singapore').format("DD MMM YYYY HH:mm A") }}</span>
+        <span>{{ moment(item.createdAt).tz('GMT').format("DD MMM YYYY HH:mm") }}</span>
       </template>
       
       <template v-slot:no-data>

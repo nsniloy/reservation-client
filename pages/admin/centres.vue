@@ -77,7 +77,7 @@
       </v-toolbar>
     </template>
     <template v-slot:[`item.createdAt`]="{ item }">
-        <span>{{ moment(item.createdAt).format("DD MMM YYYY HH:mm A") }}</span>
+        <span>{{ moment(item.createdAt).format("DD MMM YYYY HH:mm") }}</span>
       </template>
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
