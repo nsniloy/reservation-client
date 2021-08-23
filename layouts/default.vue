@@ -59,7 +59,22 @@ export default {
         {
           icon: 'mdi-home',
           title: 'Vaccination Centres',
-          to: '/admin/centre'
+          to: '/admin/centres'
+        },
+        {
+          icon: 'mdi-doctor',
+          title: 'Nurses',
+          to: '/admin/nurses'
+        },
+        {
+          icon: 'mdi-clock',
+          title: 'Slots',
+          to: '/admin/slots'
+        },
+        {
+          icon: 'mdi-calendar',
+          title: 'Reservations',
+          to: '/admin/reservations'
         }
       ],
       miniVariant: false,

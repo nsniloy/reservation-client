@@ -3,7 +3,6 @@
     :headers="headers"
     :items="data"
     :search="search"
-    sort-by="calories"
     class="elevation-1"
   >
     <template v-slot:top>
@@ -77,18 +76,23 @@
         </v-dialog>
       </v-toolbar>
     </template>
+    <template v-slot:[`item.createdAt`]="{ item }">
+        <span>{{ moment(item.createdAt).format("DD MMM YYYY HH:mm A") }}</span>
+      </template>
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
     </template>
     <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize"> Reset </v-btn>
+      <v-btn color="primary" @click="getCentres"> Reset </v-btn>
     </template>
   </v-data-table>
 </template>
 <script>
+import * as moment from "moment";
 export default {
   data: () => ({
     dialog: false,
+    moment: moment,
     dialogDelete: false,
     headers: [
       { text: "Centre name", value: "name" },
@@ -114,25 +118,16 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "New Item" : "Edit Item";
+      return "New Centre" ;
     },
   },
 
-  // watch: {
-  //   dialog(val) {
-  //     val || this.close();
-  //   },
-  //   dialogDelete(val) {
-  //     val || this.closeDelete();
-  //   },
-  // },
-
   created() {
-    this.initialize();
+    this.getCentres();
   },
 
   methods: {
-    async initialize() {
+    async getCentres() {
       try {
         let response = await this.$axios.$get("http://localhost:6001/centre");
         this.data = response.data;
@@ -141,33 +136,24 @@ export default {
       }
     },
 
-    editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
-    },
-
     deleteItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
+      this.editedIndex = this.data.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
     },
 
     async deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1);
-      //DELETE
-
       try {
-        const data = await this.$axios.$get("http://icanhazip.coms");
+        const data = await this.$axios.$delete(`http://localhost:6001/centre/${this.editedItem._id}`);
         console.log(data);
         this.closeDelete();
+        this.data.splice(this.editedIndex, 1);
       } catch (e) {
         console.log(e);
       }
     },
 
     close() {
-      console.log(1221);
       this.dialog = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
@@ -185,28 +171,17 @@ export default {
 
     async save() {
       let url = "http://localhost:6001/centre";
-      if (this.editedIndex > -1) {
-        //EDIT
-        let payload = {};
-        try {
-          const data = await this.$axios.$post(url, payload);
-          console.log(data);
-          Object.assign(this.desserts[this.editedIndex], this.editedItem);
-          this.close();
-        } catch (e) {
-          console.log(e);
-        }
-      } else {
-        //CREATE
-        let payload = {};
-        try {
-          const data = await this.$axios.$post(url, payload);
-          console.log(data);
-          this.data.push(this.editedItem);
-          this.close();
-        } catch (e) {
-          console.log(e);
-        }
+      let payload = {
+        name: this.editedItem.name,
+        address: this.editedItem.address,
+        vaccination_duration: this.editedItem.vaccination_duration,
+      };
+      try {
+        const response = await this.$axios.$post(url, payload);
+        this.data.push(response.data);
+        this.close();
+      } catch (e) {
+        console.log(e);
       }
     },
   },
