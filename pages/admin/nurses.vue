@@ -51,7 +51,6 @@
     </v-row>
 
     <v-data-table
-      v-if="data.length"
       :headers="headers"
       :items="data"
       :search="search"

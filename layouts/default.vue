@@ -11,7 +11,6 @@
           :key="i"
           :to="item.to"
           router
-          exact
         >
           <v-list-item-action>
             <v-icon>{{ item.icon }}</v-icon>
@@ -51,11 +50,6 @@ export default {
       drawer: true,
       fixed: false,
       items: [
-        {
-          icon: 'mdi-apps',
-          title: 'Dashboard',
-          to: '/admin/dashboard'
-        },
         {
           icon: 'mdi-home',
           title: 'Vaccination Centres',

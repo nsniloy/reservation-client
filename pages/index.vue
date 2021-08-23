@@ -61,7 +61,7 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
+        <v-btn depressed color="success" text @click="save"> Submit </v-btn>
       </v-card-actions>
     </v-card>
     <div name="snackbars">
@@ -76,7 +76,12 @@
       </v-snackbar>
     </div>
     <div name="snackbars">
-      <v-snackbar v-model="show_success" :color="'success'" :timeout="4000" :top="false">
+      <v-snackbar
+        v-model="show_success"
+        :color="'success'"
+        :timeout="4000"
+        :top="false"
+      >
         {{ successMessage }}
 
         <template v-slot:action="{ attrs }">
@@ -92,7 +97,7 @@
 <script>
 import * as moment from "moment";
 export default {
-  layout: 'resident',
+  layout: "resident",
   data: () => ({
     moment: moment,
     dialogDelete: false,
@@ -173,7 +178,7 @@ export default {
         let res = await this.$axios.$post(url, payload);
         this.editedItem = this.defaultItem;
         this.show_success = true;
-        this.successMessage = res.message
+        this.successMessage = res.message;
       } catch (e) {
         this.errorMessage = e.response.data.message;
         this.show = true;
