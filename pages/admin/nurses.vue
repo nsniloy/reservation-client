@@ -370,7 +370,7 @@ export default {
         number_of_nurses: this.editedItem.number_of_nurses,
         start_time: this.start_time,
         end_time: this.end_time,
-        dates: this.dates
+        dates: this.form_dates
       };
       try {
         await this.$axios.$post(url, payload);
